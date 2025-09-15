@@ -1,0 +1,26 @@
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char auth[] = "Your_Blynk_Auth_Token";
+char ssid[] = "Your_WiFi_SSID";
+char pass[] = "Your_WiFi_Password";
+
+BlynkTimer timer;
+
+void setup() {
+  Serial.begin(9600);
+  Blynk.begin(auth, ssid, pass);
+}
+
+void loop() {
+  Blynk.run();
+  if (Serial.available()) {
+    String msg = Serial.readStringUntil('\n');
+    if (msg.indexOf("THEFT") != -1) {
+      Blynk.notify("⚠️ Power Theft Detected!");
+      Blynk.virtualWrite(V1, "THEFT DETECTED");
+    } else {
+      Blynk.virtualWrite(V1, "Normal");
+    }
+  }
+}
